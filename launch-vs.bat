@@ -29,14 +29,17 @@ IF EXIST "%CUSTOM_EXT_DIR%" (
 )
 mkdir "%CUSTOM_EXT_DIR%"
 
-REM === Install each extension into the custom dir ===
+REM === Install and move each extension into the custom dir ===
 FOR %%E IN (%EXT_IDS%) DO (
     echo Installing %%E...
-    code --install-extension %%E --force --install-dir "%CUSTOM_EXT_DIR%"
+    code --install-extension %%E --force
     IF ERRORLEVEL 1 (
         echo Failed to install extension %%E
         exit /b 1
     )
+    
+    REM === Move the installed extension to the custom directory ===
+    CALL :MOVE_EXTENSION %%E
 )
 
 REM === Create the .code-workspace file ===
@@ -57,3 +60,20 @@ REM === Launch VS Code ===
 pushd "%WORKSPACE_DIR%"
 code --extensions-dir "%CUSTOM_EXT_DIR%" "%WORKSPACE_FILE%"
 popd
+exit /b 0
+
+:MOVE_EXTENSION
+SETLOCAL ENABLEDELAYEDEXPANSION
+SET "EXT_ID=%1"
+SET "EXT_DIR=%USERPROFILE%\.vscode\extensions\!EXT_ID!*"
+IF NOT EXIST "!EXT_DIR!" (
+    echo Extension directory for !EXT_ID! not found.
+    ENDLOCAL
+    exit /b 1
+)
+
+REM === Move the extension to the custom directory ===
+xcopy /E /I /Y "!EXT_DIR!" "%CUSTOM_EXT_DIR%\!EXT_ID!" >nul
+rd /s /q "!EXT_DIR!" >nul
+ENDLOCAL
+GOTO :EOF
