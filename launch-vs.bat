@@ -12,12 +12,16 @@ for %%A in ("%SCRIPT_PATH%") do (
 )
 for %%A in ("%SCRIPT_PATH%") do set "WORKSPACE_NAME=%%~nxA"
 
+
 SET "HOME_DIR=%parentDir%"
 SET "WORKSPACE_NAME=%currentFolder%"
 SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
 SET "VS_CODE_FOLDER=%WORKSPACE_DIR%\.vscode"
+
+echo Home directory: "%HOME_DIR%"
+echo Workspace: "%WORKSPACE_NAME%"
 
 for /f "usebackq delims=" %%A in (`where gcc`) do (
     set "GCC_FULL_PATH=%%A"
