@@ -10,7 +10,7 @@ SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
 SET "WORKSPACE_DIR=%~1"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
-SET "WORKSPACE_FILE=%WORKSPACE_DIR%\cpp-only.code-workspace"
+SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_DIR%.code-workspace"
 SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
 
 REM === Check if the extension exists ===
