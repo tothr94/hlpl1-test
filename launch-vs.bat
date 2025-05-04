@@ -9,7 +9,7 @@ SET "GCC_PATH=%~3"
 SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
-SET "SETTINGS_FILE=%WORKSPACE_DIR%\.vscode\settings.json"
+SET "VS_CODE_FOLDER=%WORKSPACE_DIR%\.vscode"
 SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
 
 REM === Check if the extension exists ===
@@ -30,8 +30,8 @@ IF NOT EXIST "%WORKSPACE_DIR%" (
 )
 
 REM === Ensure .vscode folder exists ===
-IF NOT EXIST "%WORKSPACE_DIR%\.vscode" (
-    echo .vscode folder "%WORKSPACE_DIR%\.vscode" does not exist.
+IF NOT EXIST "%VS_CODE_FOLDER%" (
+    echo .vscode folder "%VS_CODE_FOLDER%" does not exist.
     exit /b 1
 )
 
@@ -67,10 +67,38 @@ REM === Create the .code-workspace file ===
 REM === Create the .settings file ===
 (
     echo   {
-    echo     "C_Cpp.default.compilerPath": "%GCC_PATH%",
+    echo     "C_Cpp.default.compilerPath": "%GCC_PATH%/bin/gcc.exe",
     echo     "C_Cpp.intelliSenseEngine": "default"
     echo   }
-) > "%SETTINGS_FILE%"
+) > "%VS_CODE_FOLDER%\settings.json"
+
+
+REM === Create the c_cpp_properties.json file ===
+(
+    echo   {
+    echo     "configurations": [
+    echo       {
+    echo         "name": "Win32",
+    echo         "includePath": [
+    echo           "${workspaceFolder}/**",
+    echo           "%GCC_PATH%/include"
+    echo         ],
+    echo         "defines": [],
+    echo         "compilerPath": "%GCC_PATH%/bin/gcc.exe",
+    echo         "cStandard": "c99",
+    echo         "intelliSenseMode": "gcc-x86",
+    echo         "browse": {
+    echo           "path": [
+    echo             "C:/MinGW/include",
+    echo             "${workspaceFolder}"
+    echo           ],
+    echo           "limitSymbolsToIncludedHeaders": true
+    echo         }
+    echo       }
+    echo     ],
+    echo     "version": 4
+    echo   }
+) > "%VS_CODE_FOLDER%\c_cpp_properties.json"
 
 REM === Launch VS Code ===
 pushd "%WORKSPACE_DIR%"
