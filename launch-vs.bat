@@ -6,7 +6,7 @@ IF "%~1"=="" (
 )
 
 REM === CONFIGURATION ===
-SET "EXT_IDS=ms-vscode.cpptools ms-vscode.cpptools-extension-pack"
+SET "EXT_IDS=ms-vscode.cpptools"
 SET "WORKSPACE_DIR=%~1"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\cpp-only.code-workspace"
