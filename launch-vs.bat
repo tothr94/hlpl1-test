@@ -3,9 +3,23 @@
 REM === CONFIGURATION ===
 SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
-SET "HOME_DIR=%~1"
-SET "WORKSPACE_NAME=%~2"
-REM SET "GCC_PATH=%~3"
+
+rem Get full directory of this script
+set "fullScriptDir=%~dp0"
+
+rem Remove trailing backslash if present
+set "fullScriptDir=%fullScriptDir:~0,-1%"
+
+rem Get parent path (D:\x)
+for %%A in ("%fullScriptDir%") do (
+    for %%B in ("%%~dpA") do set "parentDir=%%~fB"
+)
+
+rem Get current folder name (y)
+for %%A in ("%fullScriptDir%") do set "currentFolder=%%~nxA"
+
+SET "HOME_DIR=%parentDir%"
+SET "WORKSPACE_NAME=%currentFolder%"
 SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
