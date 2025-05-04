@@ -8,9 +8,11 @@ IF "%~1"=="" (
 REM === CONFIGURATION ===
 SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
-SET "WORKSPACE_DIR=%~1"
+SET "HOME_DIR=%~1"
+SET "WORKSPACE_NAME=%~2"
+SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
-SET "WORKSPACE_FILE=%WORKSPACE_DIR%\HLPL1.code-workspace"
+SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
 SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
 
 REM === Check if the extension exists ===
