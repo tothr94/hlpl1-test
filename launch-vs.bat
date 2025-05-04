@@ -63,7 +63,7 @@ REM === Create the .settings file ===
     echo     "C_Cpp.default.compilerPath": "%GCC_PATH%",
     echo     "C_Cpp.intelliSenseEngine": "default"
     echo   }
-) > "%WORKSPACE_FILE%"
+) > "%SETTINGS_FILE%"
 
 REM === Launch VS Code ===
 pushd "%WORKSPACE_DIR%"
