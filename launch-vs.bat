@@ -31,7 +31,7 @@ IF NOT EXIST "%WORKSPACE_DIR%" (
 
 REM === Ensure .vscode folder exists ===
 IF NOT EXIST "%WORKSPACE_DIR%\.vscode" (
-    echo Workspace folder "%WORKSPACE_DIR%" does not exist.
+    echo .vscode folder "%WORKSPACE_DIR%\.vscode" does not exist.
     exit /b 1
 )
 
