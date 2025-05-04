@@ -6,23 +6,12 @@ IF "%~1"=="" (
 )
 
 REM === CONFIGURATION ===
-SET "EXT_ID=ms-vscode.cpptools"
+SET "EXT_IDS=ms-vscode.cpptools ms-vscode.cpptools-extension-pack"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
 SET "WORKSPACE_DIR=%~1"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\cpp-only.code-workspace"
 SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
-
-REM === Check if the extension exists ===
-SET "FOUND_EXT="
-FOR /D %%D IN ("%ORIG_EXT_DIR%\%EXT_ID%-*") DO (
-    SET "FOUND_EXT=%%D"
-)
-
-IF NOT DEFINED FOUND_EXT (
-    echo Extension "%EXT_ID%" not found in %ORIG_EXT_DIR%
-    exit /b 1
-)
 
 REM === Ensure workspace folder exists ===
 IF NOT EXIST "%WORKSPACE_DIR%" (
@@ -41,8 +30,11 @@ IF EXIST "%CUSTOM_EXT_DIR%" (
 )
 mkdir "%CUSTOM_EXT_DIR%"
 
-REM === Copy the extension ===
-xcopy "%FOUND_EXT%" "%CUSTOM_EXT_DIR%\%EXT_ID%" /E /I /Y >nul
+REM === Copy each extension ===
+FOR %%E IN (%EXT_IDS%) DO (
+    SET "EXT_ID=%%E"
+    CALL :COPY_EXTENSION
+)
 
 REM === Create the .code-workspace file ===
 (
@@ -62,3 +54,22 @@ REM === Launch VS Code ===
 pushd "%WORKSPACE_DIR%"
 code --extensions-dir "%CUSTOM_EXT_DIR%" "%WORKSPACE_FILE%"
 popd
+exit /b 0
+
+:COPY_EXTENSION
+SETLOCAL ENABLEDELAYEDEXPANSION
+SET "FOUND_EXT="
+FOR /D %%D IN ("%ORIG_EXT_DIR%\!EXT_ID!-*") DO (
+    SET "FOUND_EXT=%%D"
+)
+
+IF NOT DEFINED FOUND_EXT (
+    echo Extension "!EXT_ID!" not found in %ORIG_EXT_DIR%
+    ENDLOCAL
+    exit /b 1
+)
+
+REM Copy the extension into the custom extensions folder
+xcopy "!FOUND_EXT!" "%CUSTOM_EXT_DIR%\!EXT_ID!" /E /I /Y >nul
+ENDLOCAL
+GOTO :EOF
