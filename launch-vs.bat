@@ -29,6 +29,13 @@ IF NOT EXIST "%WORKSPACE_DIR%" (
     exit /b 1
 )
 
+REM === Ensure .vscode folder exists ===
+IF NOT EXIST "%WORKSPACE_DIR%\.vscode" (
+    echo Workspace folder "%WORKSPACE_DIR%" does not exist.
+    exit /b 1
+)
+
+
 REM === Create empty solution.c if it doesn't exist ===
 IF NOT EXIST "%SOLUTION_FILE%" (
     type nul > "%SOLUTION_FILE%"
