@@ -1,15 +1,11 @@
 @echo off
-REM === Check for workspace folder path ===
-IF "%~1"=="" (
-    echo Usage: %~nx0 ^<workspace-folder-path^>
-    exit /b 1
-)
 
 REM === CONFIGURATION ===
 SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
 SET "HOME_DIR=%~1"
 SET "WORKSPACE_NAME=%~2"
+SET "GCC_PATH=%~3"
 SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
@@ -59,6 +55,14 @@ REM === Create the .code-workspace file ===
     echo     "extensions.ignoreRecommendations": true
     echo   }
     echo }
+) > "%WORKSPACE_FILE%"
+
+REM === Create the .settings file ===
+(
+    echo   {
+    echo     "C_Cpp.default.compilerPath": "%GCC_PATH%",
+    echo     "C_Cpp.intelliSenseEngine": "default"
+    echo   }
 ) > "%WORKSPACE_FILE%"
 
 REM === Launch VS Code ===
