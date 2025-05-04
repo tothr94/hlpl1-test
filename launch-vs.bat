@@ -5,12 +5,25 @@ SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
 SET "HOME_DIR=%~1"
 SET "WORKSPACE_NAME=%~2"
-SET "GCC_PATH=%~3"
+REM SET "GCC_PATH=%~3"
 SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
 SET "VS_CODE_FOLDER=%WORKSPACE_DIR%\.vscode"
 SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
+
+
+for /f "usebackq delims=" %%A in (`where gcc`) do (
+    set "GCC_FULL_PATH=%%A"
+    goto afterWhere
+)
+
+:afterWhere
+rem Extract part before \bin
+for /f "delims=\ tokens=1,2" %%A in ("%gccPath%") do (
+    SET "GCC_PATH=%%A\%%B"
+)
+
 
 REM === Check if the extension exists ===
 SET "FOUND_EXT="
@@ -89,7 +102,7 @@ REM === Create the c_cpp_properties.json file ===
     echo         "intelliSenseMode": "gcc-x86",
     echo         "browse": {
     echo           "path": [
-    echo             "C:/MinGW/include",
+    echo             "%GCC_PATH%/include",
     echo             "${workspaceFolder}"
     echo           ],
     echo           "limitSymbolsToIncludedHeaders": true
