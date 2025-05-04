@@ -1,22 +1,16 @@
 @echo off
 
-REM === CONFIGURATION ===
+REM === configuration ===
 SET "EXT_ID=ms-vscode.cpptools"
 SET "ORIG_EXT_DIR=%USERPROFILE%\.vscode\extensions"
 
-rem Get full directory of this script
-set "fullScriptDir=%~dp0"
-
-rem Remove trailing backslash if present
-set "fullScriptDir=%fullScriptDir:~0,-1%"
-
-rem Get parent path (D:\x)
-for %%A in ("%fullScriptDir%") do (
-    for %%B in ("%%~dpA") do set "parentDir=%%~fB"
+REM === get paths ===
+set "SCRIPT_PATH=%~dp0"
+set "SCRIPT_PATH=%SCRIPT_PATH:~0,-1%"
+for %%A in ("%SCRIPT_PATH%") do (
+    for %%B in ("%%~dpA") do set "HOME_DIR=%%~fB"
 )
-
-rem Get current folder name (y)
-for %%A in ("%fullScriptDir%") do set "currentFolder=%%~nxA"
+for %%A in ("%SCRIPT_PATH%") do set "WORKSPACE_NAME=%%~nxA"
 
 SET "HOME_DIR=%parentDir%"
 SET "WORKSPACE_NAME=%currentFolder%"
@@ -24,8 +18,6 @@ SET "WORKSPACE_DIR=%HOME_DIR%\%WORKSPACE_NAME%"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\%WORKSPACE_NAME%.code-workspace"
 SET "VS_CODE_FOLDER=%WORKSPACE_DIR%\.vscode"
-SET "SOLUTION_FILE=%WORKSPACE_DIR%\solution.c"
-
 
 for /f "usebackq delims=" %%A in (`where gcc`) do (
     set "GCC_FULL_PATH=%%A"
@@ -60,12 +52,6 @@ REM === Ensure .vscode folder exists ===
 IF NOT EXIST "%VS_CODE_FOLDER%" (
     echo .vscode folder "%VS_CODE_FOLDER%" does not exist.
     exit /b 1
-)
-
-
-REM === Create empty solution.c if it doesn't exist ===
-IF NOT EXIST "%SOLUTION_FILE%" (
-    type nul > "%SOLUTION_FILE%"
 )
 
 REM === Clean and prepare custom extension dir ===
