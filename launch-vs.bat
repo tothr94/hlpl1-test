@@ -6,7 +6,7 @@ IF "%~1"=="" (
 )
 
 REM === CONFIGURATION ===
-SET "EXT_IDS=ms-vscode.cpptools"
+SET "EXT_IDS=ms-vscode.cpptools ms-vscode.cpptools-extension-pack"
 SET "WORKSPACE_DIR=%~1"
 SET "CUSTOM_EXT_DIR=%WORKSPACE_DIR%\extensions"
 SET "WORKSPACE_FILE=%WORKSPACE_DIR%\cpp-only.code-workspace"
@@ -39,7 +39,7 @@ FOR %%E IN (%EXT_IDS%) DO (
     )
     
     REM === Move the installed extension to the custom directory ===
-    CALL :MOVE_EXTENSION %%E
+    call :MOVE_EXTENSION %%E
 )
 
 REM === Create the .code-workspace file ===
@@ -63,17 +63,15 @@ popd
 exit /b 0
 
 :MOVE_EXTENSION
-SETLOCAL ENABLEDELAYEDEXPANSION
 SET "EXT_ID=%1"
-SET "EXT_DIR=%USERPROFILE%\.vscode\extensions\!EXT_ID!*"
-IF NOT EXIST "!EXT_DIR!" (
-    echo Extension directory for !EXT_ID! not found.
-    ENDLOCAL
+SET "EXT_DIR=%USERPROFILE%\.vscode\extensions\%EXT_ID%-*"
+
+IF NOT EXIST "%EXT_DIR%" (
+    echo Extension directory for %EXT_ID% not found.
     exit /b 1
 )
 
 REM === Move the extension to the custom directory ===
-xcopy /E /I /Y "!EXT_DIR!" "%CUSTOM_EXT_DIR%\!EXT_ID!" >nul
-rd /s /q "!EXT_DIR!" >nul
-ENDLOCAL
-GOTO :EOF
+xcopy /E /I /Y "%EXT_DIR%" "%CUSTOM_EXT_DIR%\%EXT_ID%" >nul
+rd /s /q "%EXT_DIR%" >nul
+exit /b
